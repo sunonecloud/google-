@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+  margin:0;
+  padding:20px;
+  background:white;
+  font-family:sans-serif;
+}
+
+.chart-container{
+  width:100%;
+  max-width:700px;
+  margin:auto;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="chart-container">
+  <canvas id="voteChart"></canvas>
+</div>
+
+<script>
+
+const apiUrl =
+"https://script.google.com/macros/s/AKfycbzJm6_X6rVDp_ssHbdqDuBZSzz1eDrQjmUwuFOlxOB4D2oDnt65KKOCosaKGxg9ZUtR/exec";
+
+async function loadChart(){
+
+  const response = await fetch(apiUrl);
+
+  const data = await response.json();
+
+  const labels = Object.keys(data);
+
+  const values = Object.values(data);
+
+  new Chart(
+    document.getElementById('voteChart'),
+    {
+
+      type:'bar',
+
+      data:{
+        labels:labels,
+
+        datasets:[{
+          label:'投票數',
+          data:values
+        }]
+      },
+
+      options:{
+        responsive:true,
+
+        scales:{
+          y:{
+            beginAtZero:true,
+            ticks:{
+              precision:0
+            }
+          }
+        }
+      }
+
+    }
+  );
+
+}
+
+loadChart();
+
+</script>
+
+</body>
+</html>
