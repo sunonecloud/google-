@@ -12,14 +12,18 @@
 body{
   margin:0;
   padding:20px;
-  background:white;
+  background:#f5f5f5;
   font-family:sans-serif;
 }
 
 .chart-container{
   width:100%;
   max-width:700px;
-  margin:auto;
+  margin:40px auto;
+}
+
+h2{
+  text-align:center;
 }
 
 </style>
@@ -29,51 +33,87 @@ body{
 <body>
 
 <div class="chart-container">
-  <canvas id="voteChart"></canvas>
+
+  <h2>為了保護兒少安全，政府如果推動使用社群平台的年齡應由13歲調高至16歲的政策，你會有什麼想法？ </h2>
+
+  <canvas id="chart1"></canvas>
+
+</div>
+
+<div class="chart-container">
+
+  <h2>如果有一天，政府規定社群平台必須把「按讚數」和「留言數」通通藏起來，只有發文的人自己看得到，大家再也沒辦法互相比較「誰的讚比較多」，你覺得怎麼樣？ </h2>
+
+  <canvas id="chart2"></canvas>
+
 </div>
 
 <script>
 
 const apiUrl =
-"https://script.google.com/macros/s/AKfycbzJm6_X6rVDp_ssHbdqDuBZSzz1eDrQjmUwuFOlxOB4D2oDnt65KKOCosaKGxg9ZUtR/exec";
+"https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnQn7Hbr2bQPwaWw4UarMn2j6c7sdmEaPF5zu_xu85v6KCtC8kOLqmulYTdAPxr6MlP3MMVNfCfwpvVN2PCMQnvlWAh36qg_G8Y2Wk2r7v2QJEuymfO_bU5WeimB77-r4Z07S1xVcPvL4-hzUCE3QEX0ixqwc-CgsDys9wM9h8xYI-WB0W1IWQ9vg1Zj8st8xTwQadj3q4dBYoK7eBrj3hgVB3Z67-7KAe6dexRz3FZomqX5aWjD5ydUz0t4f5F1zl04DM05WWpiCQLnhTEuU4nuO4cJCw&lib=MnnwqSOR1XmfLeKJ_XwTJgi_fUbR5UPbD";
 
-async function loadChart(){
+async function loadCharts(){
 
   const response = await fetch(apiUrl);
 
-  const data = await response.json();
+  const result = await response.json();
 
-  const labels = Object.keys(data);
+  // 第一題
+  createChart(
+    'chart1',
+    result.Q1,
+    '#36a2eb'
+  );
 
-  const values = Object.values(data);
+  // 第二題
+  createChart(
+    'chart2',
+    result.Q2,
+    '#ff6384'
+  );
+
+}
+
+function createChart(id,data,color){
 
   new Chart(
-    document.getElementById('voteChart'),
+    document.getElementById(id),
     {
 
       type:'bar',
 
       data:{
-        labels:labels,
+
+        labels:Object.keys(data),
 
         datasets:[{
-          label:'投票數',
-          data:values
-        
+
+          data:Object.values(data),
+
+          backgroundColor:color,
+
+          borderRadius:10
+
         }]
       },
 
       options:{
+
         responsive:true,
+
+        plugins:{
+          legend:{
+            display:false
+          }
+        },
 
         scales:{
           y:{
-            beginAtZero:true,
-            ticks:{
-              precision:0
-            }
+            beginAtZero:true
           }
         }
+
       }
 
     }
@@ -81,7 +121,7 @@ async function loadChart(){
 
 }
 
-loadChart();
+loadCharts();
 
 </script>
 
